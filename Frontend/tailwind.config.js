@@ -31,7 +31,7 @@ export default {
       fontFamily: {
         orbitron: ["Orbitron", "sans-serif"],
         poppins: ["Poppins", "sans-serif"],
-        acquire: ["Acquire", "sans-serif"],
+        acquire: ["Orbitron", "sans-serif"],
         marck: ["Marck Script", "cursive"],
         kohSantepheap: ["Koh Santepheap", "sans-serif"],
       },

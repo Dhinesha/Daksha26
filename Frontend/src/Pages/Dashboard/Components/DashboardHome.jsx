@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Trophy, 
@@ -8,37 +8,92 @@ import {
   AlertCircle, 
   ArrowRight,
   Calendar,
-  MapPin
+  MapPin,
+  Loader2
 } from 'lucide-react';
+import { supabase } from '../../../supabase';
+import { supabaseService } from '../../../services/supabaseService';
 
 const DashboardHome = () => {
+  const [profile, setProfile] = useState(null);
+  const [registrations, setRegistrations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        // Fetch Profile
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        
+        setProfile(profileData);
+
+        // Fetch Registrations
+        const regData = await supabaseService.getUserRegistrations(user.id);
+        setRegistrations(regData);
+      }
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const stats = [
-    { label: 'Events Registered', value: '4', icon: Trophy, color: 'text-secondary', bg: 'bg-secondary/10' },
-    { label: 'Workshops', value: '1', icon: Cpu, color: 'text-primary-light', bg: 'bg-primary/10' },
-    { label: 'Teams Joined', value: '2', icon: Users, color: 'text-secondary-light', bg: 'bg-secondary/10' },
-    { label: 'Attendance', value: '0/5', icon: CheckCircle2, color: 'text-green-400', bg: 'bg-green-500/10' },
+    { 
+      label: 'Events Registered', 
+      value: registrations.length.toString(), 
+      icon: Trophy, 
+      color: 'text-secondary', 
+      bg: 'bg-secondary/10' 
+    },
+    { 
+      label: 'Workshops', 
+      value: registrations.filter(r => r.events?.category === 'workshop').length.toString(), 
+      icon: Cpu, 
+      color: 'text-primary-light', 
+      bg: 'bg-primary/10' 
+    },
+    { 
+      label: 'Teams Joined', 
+      value: '0', // Placeholder for team logic
+      icon: Users, 
+      color: 'text-secondary-light', 
+      bg: 'bg-secondary/10' 
+    },
+    { 
+      label: 'Attendance', 
+      value: `0/${registrations.length}`, 
+      icon: CheckCircle2, 
+      color: 'text-green-400', 
+      bg: 'bg-green-500/10' 
+    },
   ];
 
   const alerts = [
     { 
-      title: 'Payment Pending', 
-      message: 'Your registration for "Cyber Hackathon" is awaiting payment confirmation.', 
-      type: 'warning',
-      action: 'Pay Now'
-    },
-    { 
-      title: 'Team Invitation', 
-      message: 'You have been invited to join "Team Alpha" for the Robo-Race event.', 
+      title: 'Welcome to DaKshaa!', 
+      message: 'Complete your registration for events to get your entry tickets.', 
       type: 'info',
-      action: 'View Invite'
-    },
-    { 
-      title: 'Attendance Active', 
-      message: 'QR for "Inauguration Ceremony" is now active. Head to the Main Auditorium.', 
-      type: 'success',
-      action: 'Show QR'
-    },
+      action: 'Browse Events'
+    }
   ];
+
+  if (loading) {
+    return (
+      <div className="h-96 flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-secondary" />
+      </div>
+    );
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -66,17 +121,19 @@ const DashboardHome = () => {
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-dark/20 to-secondary-dark/20 border border-white/10 p-8">
         <div className="relative z-10">
           <motion.h1 variants={itemVariants} className="text-3xl md:text-4xl font-bold mb-2">
-            Welcome, Alex 👋
+            Welcome, {profile?.full_name || 'Student'} 👋
           </motion.h1>
           <motion.p variants={itemVariants} className="text-gray-400 max-w-2xl">
-            K.S.Rangasamy College of Technology • Information Technology • 3rd Year
+            {profile?.college_name || 'College Name'} • {profile?.department || 'Department'} • {profile?.year_of_study || 'Year'}
           </motion.p>
           <motion.div variants={itemVariants} className="mt-6 flex flex-wrap gap-3">
-            <span className="px-4 py-1.5 rounded-full bg-secondary/20 border border-secondary/30 text-secondary text-sm font-medium">
-              Platinum Combo Holder
-            </span>
+            {registrations.some(r => r.combo_id) && (
+              <span className="px-4 py-1.5 rounded-full bg-secondary/20 border border-secondary/30 text-secondary text-sm font-medium">
+                Combo Pass Holder
+              </span>
+            )}
             <span className="px-4 py-1.5 rounded-full bg-primary/20 border border-primary/30 text-primary-light text-sm font-medium">
-              ID: DAK25-0842
+              Roll No: {profile?.roll_number || 'N/A'}
             </span>
           </motion.div>
         </div>

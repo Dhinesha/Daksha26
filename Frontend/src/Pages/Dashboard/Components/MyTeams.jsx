@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { 
   Users, 
   UserPlus, 
@@ -9,38 +9,41 @@ import {
   Crown,
   Mail,
   Phone,
-  ShieldCheck
-} from 'lucide-react';
+  ShieldCheck,
+  Loader2
+} from "lucide-react";
+import { supabase } from "../../../supabase";
+import { supabaseService } from "../../../services/supabaseService";
 
 const MyTeams = () => {
-  const teams = [
-    {
-      id: 1,
-      teamName: 'Web Wizards',
-      eventName: 'Cyber Hackathon 2025',
-      role: 'Team Lead',
-      size: { joined: 3, allowed: 4 },
-      paymentStatus: 'Confirmed',
-      members: [
-        { name: 'Alex Johnson', role: 'Lead', status: 'Joined', email: 'alex.j@example.com' },
-        { name: 'Rahul S', role: 'Member', status: 'Joined', email: 'rahul@example.com' },
-        { name: 'Sneha P', role: 'Member', status: 'Joined', email: 'sneha@example.com' },
-        { name: 'Pending', role: 'Member', status: 'Invited', email: 'amit@example.com' },
-      ]
-    },
-    {
-      id: 2,
-      teamName: 'Robo-Riders',
-      eventName: 'Robo-Race',
-      role: 'Member',
-      size: { joined: 2, allowed: 2 },
-      paymentStatus: 'Pending',
-      members: [
-        { name: 'Arjun V', role: 'Lead', status: 'Joined', email: 'arjun@example.com' },
-        { name: 'Alex Johnson', role: 'Member', status: 'Joined', email: 'alex.j@example.com' },
-      ]
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTeams();
+  }, []);
+
+  const fetchTeams = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const data = await supabaseService.getUserTeams(user.id);
+        setTeams(data);
+      }
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  if (loading) {
+    return (
+      <div className="h-96 flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-secondary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -71,29 +74,23 @@ const MyTeams = () => {
                   </div>
                   <div>
                     <div className="flex items-center gap-3">
-                      <h3 className="text-2xl font-bold">{team.teamName}</h3>
+                      <h3 className="text-2xl font-bold">{team.name}</h3>
                       <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${
-                        team.role === 'Team Lead' ? 'bg-yellow-500/20 text-yellow-500 border border-yellow-500/30' : 'bg-primary/20 text-primary-light border border-primary/30'
+                        team.role === "lead" ? "bg-yellow-500/20 text-yellow-500 border border-yellow-500/30" : "bg-primary/20 text-primary-light border border-primary/30"
                       }`}>
                         {team.role}
                       </span>
                     </div>
-                    <p className="text-secondary font-medium mt-1">{team.eventName}</p>
+                    <p className="text-secondary font-medium mt-1">{team.events?.title}</p>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-4 md:gap-8">
                   <div className="text-center">
                     <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Team Size</p>
-                    <p className="text-xl font-bold">{team.size.joined} / {team.size.allowed}</p>
+                    <p className="text-xl font-bold">{team.members.length} / {team.events?.max_team_size || "?"}</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Payment</p>
-                    <span className={`text-sm font-bold ${team.paymentStatus === 'Confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>
-                      {team.paymentStatus}
-                    </span>
-                  </div>
-                  {team.role === 'Team Lead' && (
+                  {team.role === "lead" && (
                     <button className="px-5 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-bold transition-all">
                       Manage Team
                     </button>
@@ -103,57 +100,34 @@ const MyTeams = () => {
             </div>
 
             <div className="p-6 md:p-8">
-              <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Team Members</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {team.members.map((member, idx) => (
-                  <div 
-                    key={idx}
-                    className={`p-4 rounded-2xl border transition-all duration-300 ${
-                      member.status === 'Invited' ? 'bg-white/[0.02] border-dashed border-white/20' : 'bg-white/5 border-white/10 hover:border-secondary/50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        member.status === 'Invited' ? 'bg-gray-500/10 text-gray-500' : 'bg-secondary/10 text-secondary'
-                      }`}>
-                        {member.role === 'Lead' ? <Crown size={20} /> : <Users size={20} />}
-                      </div>
-                      {member.status === 'Joined' ? (
-                        <CheckCircle2 size={16} className="text-green-500" />
-                      ) : (
-                        <ShieldCheck size={16} className="text-yellow-500" />
-                      )}
+                  <div key={idx} className="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-4">
+                    <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0">
+                      {member.role === "lead" ? <Crown className="text-yellow-500" size={18} /> : <Users className="text-gray-400" size={18} />}
                     </div>
-                    <h5 className={`font-bold ${member.status === 'Invited' ? 'text-gray-500' : 'text-white'}`}>
-                      {member.name}
-                    </h5>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-tighter mt-1">{member.role}</p>
-                    
-                    {member.status === 'Invited' && team.role === 'Team Lead' && (
-                      <div className="mt-4 flex gap-2">
-                        <button className="flex-1 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors">
-                          <UserMinus size={14} className="mx-auto" />
-                        </button>
-                        <button className="flex-1 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors">
-                          <Mail size={14} className="mx-auto" />
-                        </button>
-                      </div>
-                    )}
+                    <div className="min-w-0">
+                      <p className="font-bold text-white truncate">{member.name}</p>
+                      <p className="text-xs text-gray-500 truncate capitalize">{member.status}</p>
+                    </div>
                   </div>
                 ))}
-                
-                {team.size.joined < team.size.allowed && team.role === 'Team Lead' && (
-                  <button className="p-4 rounded-2xl border border-dashed border-secondary/30 bg-secondary/5 hover:bg-secondary/10 transition-all flex flex-col items-center justify-center gap-2 group">
-                    <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <UserPlus size={20} className="text-secondary" />
-                    </div>
-                    <span className="text-sm font-bold text-secondary">Invite Member</span>
-                  </button>
-                )}
               </div>
             </div>
           </motion.div>
         ))}
+
+        {teams.length === 0 && (
+          <div className="text-center py-20 bg-white/5 border border-white/10 rounded-3xl">
+            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Users className="text-gray-600" size={40} />
+            </div>
+            <h3 className="text-xl font-bold text-white">No Teams Found</h3>
+            <p className="text-gray-500 mt-2 max-w-xs mx-auto">
+              You haven't joined or created any teams yet. Start by creating a team for a group event!
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

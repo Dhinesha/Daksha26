@@ -61,7 +61,7 @@ const ScrollToTop = () => {
               strokeWidth="3"
               strokeLinecap="round"
               strokeDasharray={2 * Math.PI * 24}
-              strokeDashoffset={2 * Math.PI * 24 * (1 - scrollProgress / 100)}
+              strokeDashoffset={2 * Math.PI * 24 * (1 - (isNaN(scrollProgress) ? 0 : scrollProgress) / 100)}
               transition={{ duration: 0.2 }}
             />
             <defs>

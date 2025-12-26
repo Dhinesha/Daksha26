@@ -204,6 +204,21 @@ const UltraFooter = () => {
                 />
               ))}
             </div>
+
+            <motion.div
+              className="mt-8"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.8 }}
+            >
+              <a 
+                href="/feedback" 
+                className="px-6 py-2 border border-cyan-500/50 rounded-full text-cyan-400 hover:bg-cyan-500 hover:text-slate-950 transition-all duration-300 text-sm font-orbitron"
+              >
+                Give Feedback
+              </a>
+            </motion.div>
           </div>
         </div>
 

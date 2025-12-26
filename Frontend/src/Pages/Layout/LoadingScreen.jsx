@@ -300,11 +300,11 @@ const CircuitLoader = ({ text }) => {
           />
           
           {/* Corner nodes */}
-          {[[50, 10], [90, 50], [50, 90], [10, 50]].map(([cx, cy], i) => (
+          {[[50, 10], [90, 50], [50, 90], [10, 50]].map(([x, y], i) => (
             <motion.circle
               key={i}
-              cx={cx}
-              cy={cy}
+              cx={x || 0}
+              cy={y || 0}
               r="4"
               fill="#06b6d4"
               animate={{ opacity: [0.3, 1, 0.3] }}

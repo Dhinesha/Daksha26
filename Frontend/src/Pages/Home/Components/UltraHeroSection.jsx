@@ -7,6 +7,7 @@ import Daksha from "../../../assets/DaKshaa.png";
 import UltraCountdown from "./UltraCountdown";
 import RegisterAni from "../../../assets/registerani.gif";
 import brochure from "../../../assets/brochure.pdf";
+import RobotHero from "./RobotHero";
 
 // Enhanced Glowing Text Animation
 const glowAnimation = {
@@ -30,7 +31,7 @@ const glowAnimation = {
 const CyberGrid = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-      <div 
+      <div
         className="absolute inset-0"
         style={{
           backgroundImage: `
@@ -65,11 +66,11 @@ const HeroParticles = () => {
             top: `${Math.random() * 100}%`,
             width: `${Math.random() * 4 + 2}px`,
             height: `${Math.random() * 4 + 2}px`,
-            background: i % 3 === 0 
+            background: i % 3 === 0
               ? 'radial-gradient(circle, rgba(14, 165, 233, 1) 0%, rgba(14, 165, 233, 0) 70%)'
-              : i % 3 === 1 
-              ? 'radial-gradient(circle, rgba(6, 182, 212, 1) 0%, rgba(6, 182, 212, 0) 70%)'
-              : 'radial-gradient(circle, rgba(139, 92, 246, 1) 0%, rgba(139, 92, 246, 0) 70%)',
+              : i % 3 === 1
+                ? 'radial-gradient(circle, rgba(6, 182, 212, 1) 0%, rgba(6, 182, 212, 0) 70%)'
+                : 'radial-gradient(circle, rgba(249, 115, 22, 1) 0%, rgba(249, 115, 22, 0) 70%)',
           }}
           animate={{
             y: [0, -50, 0],
@@ -92,7 +93,7 @@ const HeroParticles = () => {
 // Hexagonal Tech Pattern
 const HexPattern = () => {
   return (
-    <motion.div 
+    <motion.div
       className="absolute right-0 top-1/4 w-96 h-96 opacity-10 pointer-events-none hidden lg:block"
       initial={{ opacity: 0, rotate: -30 }}
       animate={{ opacity: 0.1, rotate: 0 }}
@@ -107,13 +108,13 @@ const HexPattern = () => {
             stroke="url(#hexGrad)"
             strokeWidth="0.5"
             transform={`scale(${0.3 + i * 0.12}) translate(${100 - (0.3 + i * 0.12) * 100}, ${100 - (0.3 + i * 0.12) * 100})`}
-            animate={{ 
+            animate={{
               rotate: [0, 360],
               opacity: [0.3, 0.7, 0.3]
             }}
-            transition={{ 
-              duration: 20 + i * 5, 
-              repeat: Infinity, 
+            transition={{
+              duration: 20 + i * 5,
+              repeat: Infinity,
               ease: "linear",
               delay: i * 0.5
             }}
@@ -123,7 +124,7 @@ const HexPattern = () => {
           <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#0ea5e9" />
             <stop offset="50%" stopColor="#06b6d4" />
-            <stop offset="100%" stopColor="#8b5cf6" />
+            <stop offset="100%" stopColor="#f97316" />
           </linearGradient>
         </defs>
       </svg>
@@ -134,11 +135,11 @@ const HexPattern = () => {
 // Animated Cyber Button with enhanced effects
 const CyberButton = ({ children, onClick, variant = "primary", className = "" }) => {
   const baseStyles = "relative px-8 py-3 font-orbitron text-sm tracking-wider uppercase overflow-hidden group cursor-pointer";
-  
+
   const variants = {
     primary: "bg-gradient-to-r from-sky-600 to-cyan-600 text-white",
     secondary: "bg-transparent border-2 border-sky-500 text-sky-400",
-    accent: "bg-gradient-to-r from-purple-600 to-sky-600 text-white",
+    accent: "bg-gradient-to-r from-orange-500 to-sky-600 text-white",
   };
 
   return (
@@ -156,14 +157,14 @@ const CyberButton = ({ children, onClick, variant = "primary", className = "" })
         whileHover={{ x: "200%" }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
       />
-      
+
       {/* Pulse effect on hover */}
       <motion.div
         className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100"
         animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
         transition={{ duration: 1, repeat: Infinity }}
       />
-      
+
       <span className="relative z-10 flex items-center gap-2">
         {children}
         <motion.span
@@ -184,8 +185,8 @@ const StatsCard = ({ detail, onClick, delay }) => {
       initial={{ opacity: 0, y: 30, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, delay }}
-      whileHover={{ 
-        scale: 1.1, 
+      whileHover={{
+        scale: 1.1,
         y: -8,
         boxShadow: "0 20px 40px rgba(14, 165, 233, 0.3)",
       }}
@@ -195,11 +196,11 @@ const StatsCard = ({ detail, onClick, delay }) => {
     >
       {/* Glow effect */}
       <motion.div
-        className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-sky-500 to-purple-500 rounded-lg blur-lg opacity-0 group-hover:opacity-75"
+        className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-sky-500 to-orange-500 rounded-lg blur-lg opacity-0 group-hover:opacity-75"
         animate={{ rotate: [0, 360] }}
         transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
       />
-      
+
       {/* Card content */}
       <div className="relative bg-gradient-to-br from-sky-900/90 to-sky-950/90 backdrop-blur-xl border border-sky-500/30 rounded-lg px-6 py-4 overflow-hidden">
         {/* Corner accents */}
@@ -207,14 +208,14 @@ const StatsCard = ({ detail, onClick, delay }) => {
         <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-cyan-400" />
         <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-cyan-400" />
         <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-cyan-400" />
-        
+
         {/* Animated background line */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent"
           animate={{ x: ['-100%', '100%'] }}
           transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
         />
-        
+
         <motion.span
           className="relative z-10 text-white text-sm sm:text-base md:text-lg font-orbitron tracking-wider font-bold"
         >
@@ -306,7 +307,7 @@ const UltraHeroSection = () => {
       <CyberGrid />
       <HeroParticles />
       <HexPattern />
-      
+
       {/* Mouse follow glow */}
       <motion.div
         className="fixed w-96 h-96 rounded-full pointer-events-none z-0 hidden lg:block"
@@ -339,34 +340,34 @@ const UltraHeroSection = () => {
           whileTap={{ scale: 0.95 }}
         >
           {/* Animated Background Glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          
+          <div className="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
           {/* Icon Container */}
           <div className="relative flex items-center justify-center">
             <motion.div
-              animate={{ 
+              animate={{
                 y: [0, -3, 0],
               }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
               }}
             >
               <Download className="w-5 h-5 text-sky-400 group-hover:text-sky-300 transition-colors" />
             </motion.div>
-            
+
             {/* Icon Pulse Effect */}
             <motion.div
               className="absolute inset-0 bg-sky-400/30 rounded-full -z-10"
-              animate={{ 
+              animate={{
                 scale: [1, 1.5, 1],
                 opacity: [0.5, 0, 0.5]
               }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
               }}
             />
           </div>
@@ -418,7 +419,7 @@ const UltraHeroSection = () => {
                 >
                   DAKSHAA
                 </h1>
-                
+
                 {/* T26 with cyan gradient */}
                 <h1
                   className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-orbitron font-bold tracking-wide"
@@ -433,7 +434,7 @@ const UltraHeroSection = () => {
                   T26
                 </h1>
               </motion.div>
-              
+
               {/* Subtitle */}
               <motion.p
                 className="mt-3 text-sm sm:text-base text-orange-200/80 font-poppins tracking-widest uppercase text-center lg:text-left"
@@ -443,7 +444,7 @@ const UltraHeroSection = () => {
               >
                 National Level Techno-Cultural Fest
               </motion.p>
-              
+
               {/* Simple underline */}
               <motion.div
                 className="mt-3 w-32 h-[1px] bg-gradient-to-r from-transparent via-orange-500/60 to-transparent mx-auto lg:mx-0"
@@ -525,7 +526,7 @@ const UltraHeroSection = () => {
         <motion.div
           className="absolute w-[80%] h-[80%] rounded-full blur-3xl"
           style={{
-            background: 'radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, rgba(139, 92, 246, 0.15) 50%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, rgba(249, 115, 22, 0.15) 50%, transparent 70%)',
           }}
           animate={{
             scale: [1, 1.3, 1],
@@ -533,7 +534,7 @@ const UltraHeroSection = () => {
           }}
           transition={{ duration: 5, repeat: Infinity }}
         />
-        
+
         {/* Animated rings */}
         {[1, 2, 3].map((ring) => (
           <motion.div
@@ -543,17 +544,17 @@ const UltraHeroSection = () => {
               width: `${50 + ring * 15}%`,
               height: `${50 + ring * 15}%`,
             }}
-            animate={{ 
+            animate={{
               rotate: ring % 2 === 0 ? 360 : -360,
               scale: [1, 1.05, 1],
             }}
-            transition={{ 
+            transition={{
               rotate: { duration: 20 + ring * 5, repeat: Infinity, ease: "linear" },
               scale: { duration: 3, repeat: Infinity }
             }}
           />
         ))}
-        
+
         {/* Orbiting elements with trails */}
         <motion.div
           className="absolute w-full h-full"
@@ -571,14 +572,14 @@ const UltraHeroSection = () => {
               }}
             >
               <motion.div
-                className="w-3 h-3 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full"
+                className="w-3 h-3 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full"
                 animate={{
                   scale: [1, 1.8, 1],
                   opacity: [0.6, 1, 0.6],
                   boxShadow: [
-                    "0 0 10px rgba(6, 182, 212, 0.5)",
-                    "0 0 30px rgba(6, 182, 212, 0.8)",
-                    "0 0 10px rgba(6, 182, 212, 0.5)",
+                    "0 0 10px rgba(249, 115, 22, 0.5)",
+                    "0 0 30px rgba(249, 115, 22, 0.8)",
+                    "0 0 10px rgba(249, 115, 22, 0.5)",
                   ],
                 }}
                 transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
@@ -589,27 +590,13 @@ const UltraHeroSection = () => {
 
         {/* Hero Image with 3D effect */}
         <motion.div
-          className="relative z-10"
+          className="relative z-10 w-full"
           style={{
             transformStyle: "preserve-3d",
             perspective: "1000px",
           }}
         >
-          <motion.img
-            src={HeroImg}
-            alt="Tech Hero"
-            className="relative z-10 w-[70%] md:w-[75%] max-w-[500px] h-auto mx-auto"
-            style={{
-              filter: "drop-shadow(0 0 30px rgba(14, 165, 233, 0.4))",
-            }}
-            variants={floatAnimation}
-            animate="animate"
-            whileHover={{ 
-              scale: 1.08,
-              filter: "drop-shadow(0 0 50px rgba(14, 165, 233, 0.6))",
-            }}
-            transition={{ duration: 0.3 }}
-          />
+          <RobotHero />
         </motion.div>
 
         {/* Tech circle overlay */}
@@ -644,7 +631,7 @@ const UltraHeroSection = () => {
             <defs>
               <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#0ea5e9" />
-                <stop offset="50%" stopColor="#8b5cf6" />
+                <stop offset="50%" stopColor="#f97316" />
                 <stop offset="100%" stopColor="#06b6d4" />
               </linearGradient>
             </defs>
@@ -659,16 +646,16 @@ const UltraHeroSection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2 }}
       >
-        <motion.span 
+        <motion.span
           className="text-sky-400 text-xs font-poppins mb-3 tracking-widest"
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
           SCROLL TO EXPLORE
         </motion.span>
-        <motion.div 
+        <motion.div
           className="w-6 h-10 border-2 border-sky-500/50 rounded-full flex justify-center pt-2 backdrop-blur-sm bg-sky-950/30"
-          animate={{ 
+          animate={{
             borderColor: ['rgba(14, 165, 233, 0.5)', 'rgba(6, 182, 212, 0.8)', 'rgba(14, 165, 233, 0.5)']
           }}
           transition={{ duration: 2, repeat: Infinity }}

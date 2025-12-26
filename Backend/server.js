@@ -12,6 +12,26 @@ app.use(cors());
 // Middleware for JSON parsing
 app.use(express.json());
 
+// Initialize Database Tables
+const initDB = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS feedback_details (
+        feedback_id UUID PRIMARY KEY,
+        username VARCHAR(255) NOT NULL,
+        email_id VARCHAR(255) NOT NULL,
+        rating INTEGER NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    console.log("✅ Database tables initialized");
+  } catch (error) {
+    console.error("❌ Error initializing database tables:", error);
+  }
+};
+initDB();
+
 /* 🟢 Route to Insert Data into accommodation_details */
 app.post("/add-accommodation", async (req, res) => {
   try {
@@ -104,6 +124,54 @@ app.get("/contacts", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+/* 🟢 Route to Insert Data into feedback_details */
+app.post("/add-feedback", async (req, res) => {
+  try {
+    let { username, email_id, rating, message } = req.body;
+
+    // Validate required fields
+    if (!username || !email_id || !rating || !message) {
+      return res.status(400).json({ error: "All fields are required!" });
+    }
+
+    // Generate UUID for feedback_id
+    const feedback_id = uuidv4();
+
+    // Insert query
+    const result = await pool.query(
+      `INSERT INTO feedback_details (feedback_id, username, email_id, rating, message, created_at) 
+       VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *`,
+      [feedback_id, username, email_id, rating, message]
+    );
+
+    res.status(201).json({
+      message: "Feedback submitted successfully!",
+      data: result.rows[0],
+    });
+  } catch (error) {
+    console.error("❌ Error inserting feedback:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+/* 🟢 Route to Fetch All Feedback Details */
+app.get("/feedbacks", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT username, email_id, rating, message, created_at FROM feedback_details ORDER BY created_at DESC`
+    );
+
+    res.status(200).json({
+      message: "Fetched feedback details successfully!",
+      data: result.rows,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching feedback:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
